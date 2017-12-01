@@ -1,6 +1,6 @@
 {
   "name": "tiny-graphql-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a very simple and tiny graphql client, only support `query` and `mutation`.",
   "main": "lib/index.js",
   "scripts": {
