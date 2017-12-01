@@ -13,7 +13,7 @@
  *     });
  * });
  * 
- * client(`query me { me { name, age } }`, undefined, { header1: '123', header2: '456' }).then(res => res.json()).then(r => console.log(r.data.me));
+ * client.run(`query me { me { name, age } }`, undefined, { header1: '123', header2: '456' }).then(res => res.json()).then(r => console.log(r.data.me));
  * ```
  * @example extra as callback
  * ```js
@@ -28,7 +28,7 @@
  *     }).then(res => res.json()).then(res => callback(null, res)).catch(error => callback(error));
  * });
  * 
- * client(`query me{me{name,age}}`, undefined, r => console.log(r.data.me));
+ * client.run(`query me{me{name,age}}`, undefined, r => console.log(r.data.me));
  * ```
  * @example whatever extras
  * ```js
@@ -39,13 +39,13 @@
  *     }).then(r => r.json());
  * });
  * 
- * client(`query me { me { name, age } }`, undefined, { url: 'http://graphql.org/graphql', options: { method: 'post' } }).then(r => console.log(r.data.me));
+ * client.run(`query me { me { name, age } }`, undefined, { url: 'http://graphql.org/graphql', options: { method: 'post' } }).then(r => console.log(r.data.me));
  * ```
  * @example register_fragment
  * ```js
  * const client = create_client(your_custom_send_function);
  * client.register_fragment(`fragment person_fragment on Person { name, age }`);
- * client(`query me { me { ...person_fragment } }`).then(r => r.json()).then(r => console.log(r.data.me));
+ * client.run(`query me { me { ...person_fragment } }`).then(r => r.json()).then(r => console.log(r.data.me));
  * ```
  * @example batch_request
  * ```js
@@ -82,12 +82,15 @@
  * 
  * const client = create_client(batch_send());
  * ```
- * @param {(body, extra) => Promise | void} send: your custom request function
- * @returns {(query, variables, extra) => Promise | void} and the returned function has a property `register_fragment: (fragment: string) => void`
+ * @param {(body: { operationName: string, query: string, variables: any }, extra?: any) => T} send: your custom request function
+ * @returns {{
+ *      run: (query: string, variables?: any, extra?: any) => T,
+ *      register_fragment: (fragment: string) => void 
+ * }}
  */
-export function create_client(send) {
+export function create_client<T>(send: (body: { operationName: string, query: string, variables: any }, extra?: any) => T) {
     const fragments = {};
-    function client(query, variables, extra) {
+    function run(query: string, variables?, extra?) {
         const operationName = query.match(/(query|mutation)\s+(\w+)/)[2];
         if (!operationName) {
             throw new Error('not valid query: ' + query);
@@ -100,7 +103,7 @@ export function create_client(send) {
             });
         return send({ operationName, query, variables }, extra);
     }
-    function register_fragment(fragment) {
+    function register_fragment(fragment: string) {
         const fragment_name = fragment.match(/fragment\s+(\w+)/)[1];
         if (!fragment_name) {
             throw new Error('not valid fragment: ' + fragment);
@@ -110,6 +113,5 @@ export function create_client(send) {
         }
         fragments[fragment_name] = fragment;
     }
-    client.register_fragment = register_fragment;
-    return client;
+    return { run, register_fragment };
 }

@@ -1,23 +1,25 @@
 {
   "name": "tiny-graphql-client",
-  "version": "1.0.1",
-  "description": "a very simple and tiny graphql client, only support `query` and `mutation`.",
+  "version": "0.0.1",
+  "description": "a tiny, simple and customable graphql client, only support `query` and `mutation`.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "webpack -p",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xialvjun/tiny-graphql-client.git"
   },
   "keywords": [
     "graphql",
     "client",
-    "simple"
+    "simple",
+    "tiny"
   ],
   "author": "xialvjun@live.com",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-es2015": "^6.24.1",
-    "webpack": "^3.9.1"
+    "typescript": "^2.6.2"
   }
 }

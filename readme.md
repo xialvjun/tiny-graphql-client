@@ -1,6 +1,6 @@
-### a very tiny and customable graphql client
+### a tiny, simple and customable graphql client
 
-#### use examples
+#### examples
 
 **extra_headers**
 
@@ -17,7 +17,7 @@ const client = create_client((body, extra_headers) => {
     });
 });
 
-client(`query me { me { name, age } }`, undefined, { header1: '123', header2: '456' }).then(res => res.json()).then(r => console.log(r.data.me));
+client.run(`query me { me { name, age } }`, undefined, { header1: '123', header2: '456' }).then(res => res.json()).then(r => console.log(r.data.me));
 ```
 
 **extra as callback**
@@ -34,7 +34,7 @@ const client = create_client((body, callback) => {
     }).then(res => res.json()).then(res => callback(null, res)).catch(error => callback(error));
 });
 
-client(`query me{me{name,age}}`, undefined, r => console.log(r.data.me));
+client.run(`query me{me{name,age}}`, undefined, r => console.log(r.data.me));
 ```
 
 **whatever extras**
@@ -47,7 +47,7 @@ const client = create_client((body, extra) => {
     }).then(r => r.json());
 });
 
-client(`query me { me { name, age } }`, undefined, { url: 'http://graphql.org/graphql', options: { method: 'post' } }).then(r => console.log(r.data.me));
+client.run(`query me { me { name, age } }`, undefined, { url: 'http://graphql.org/graphql', options: { method: 'post' } }).then(r => console.log(r.data.me));
 ```
 
 **register_fragment**
@@ -55,7 +55,7 @@ client(`query me { me { name, age } }`, undefined, { url: 'http://graphql.org/gr
 ```js
 const client = create_client(your_custom_send_function);
 client.register_fragment(`fragment person_fragment on Person { name, age }`);
-client(`query me { me { ...person_fragment } }`).then(r => r.json()).then(r => console.log(r.data.me));
+client.run(`query me { me { ...person_fragment } }`).then(r => r.json()).then(r => console.log(r.data.me));
 ```
 
 **batch_request**
