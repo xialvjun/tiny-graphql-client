@@ -88,7 +88,7 @@
 export function create_client(send) {
     const fragments = {};
     function client(query, variables, extra) {
-        const operationName = query.match(/query\s+(\w+)|mutation\s+(\w+)/)[1];
+        const operationName = query.match(/(query|mutation)\s+(\w+)/)[2];
         if (!operationName) {
             throw new Error('not valid query: ' + query);
         }
