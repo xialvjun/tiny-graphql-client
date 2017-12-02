@@ -62,6 +62,8 @@
  *         if (timeout_id !== null) return;
  *         timeout_id = setTimeout(() => {
  *             timeout_id = null;
+ *             const to_fetch = cache.slice();
+ *             cache.splice(0, -1);
  *             fetch('http://graphql.org/graphql', {
  *                 method: 'post',
  *                 body: JSON.stringify(cache.map(c => c.body)),
@@ -71,10 +73,9 @@
  *                 },
  *             }).then(res => res.json()).then(res => {
  *                 // todo: resolve those promises
- *                 cache.splice(0, -1);
+ *                 // to_fetch do something according to the structure of res
  *             }).catch(error => {
- *                 cache.forEach(c => c.reject(error));
- *                 cache.splice(0, -1);
+ *                 to_fetch.forEach(c => c.reject(error));
  *             });
  *         }, 0);
  *     }
