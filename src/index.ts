@@ -1,7 +1,13 @@
+const FRAGMENT_USE_REGEX = /\.{3}(\w+)/g;
+const FRAGMENT_DEF_REGEX = /^fragment\s+(\w+)/;
+const OPERATION_NAME_REGEX = /^(query|mutation)(\s+\w+)?\s*([\(\{])/;
+
+const random_name = () => Math.random().toString(32).slice(2);
+
 export function create_client<T>(send: (body: { operationName: string, query: string, variables: any }, extra?: any) => T) {
     const fragments = {};
     function detect_fragments(query: string, old_detected_fragments: string[]=[]) {
-        const detected_fragments = (query.match(/\.{3}(\w+)/g) || [])
+        const detected_fragments = (query.match(FRAGMENT_USE_REGEX) || [])
             .map(f => f.slice(3))
             .reduce((acc, cv) => acc.indexOf(cv) === -1 ? acc.concat(cv) : acc, []);
         const new_detected_fragments = detected_fragments
@@ -13,15 +19,23 @@ export function create_client<T>(send: (body: { operationName: string, query: st
         return query;
     }
     function run(query: string, variables?, extra?) {
-        const operationName = query.match(/(query|mutation)\s+(\w+)/)[2];
-        if (!operationName) {
+        query = query.trim();
+        query = query.startsWith('{') ? `query ${query}` : query;
+        const match = query.match(OPERATION_NAME_REGEX);
+        if (!match) {
             throw new Error('not valid query: ' + query);
         }
+        let operationName = (match[2] || '').trim();
+        if (!operationName) {
+            operationName = random_name();
+        }
+        query = query.replace(match[0], `${match[1]} ${operationName}${match[3]==='(' ? '(' : ' {'}`);
         query = detect_fragments(query);
         return send({ operationName, query, variables }, extra);
     }
     function register_fragment(fragment: string) {
-        const fragment_name = fragment.match(/fragment\s+(\w+)/)[1];
+        fragment = fragment.trim();
+        const fragment_name = fragment.match(FRAGMENT_DEF_REGEX)[1];
         if (!fragment_name) {
             throw new Error('not valid fragment: ' + fragment);
         }
