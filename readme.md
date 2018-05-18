@@ -1,6 +1,10 @@
-### a tiny, simple and customable graphql client
+# tiny-graphql-client
+A tiny, simple and customable graphql client, only support `query` and `mutation` now.
 
-#### examples
+## Install
+`npm i @xialvjun/tiny-graphql-client` or `yarn add @xialvjun/tiny-graphql-client`
+
+## examples
 
 **extra_headers**
 
@@ -54,8 +58,22 @@ client.run(`query me { me { name, age } }`, undefined, { url: 'http://graphql.or
 
 ```js
 const client = create_client(your_custom_send_function);
-client.register_fragment(`fragment person_fragment on Person { name, age }`);
-client.run(`query me { me { ...person_fragment } }`).then(r => r.json()).then(r => console.log(r.data.me));
+client.register_fragment(`
+fragment person_fragment on Person {
+  id, name, age
+}`);
+client.register_fragment(`
+fragment book_fragment on Book {
+  id, title, cover
+  author { ...person_fragment }
+}`);
+// and even nested fragments
+client.run(`
+query book($id: $ID!) {
+  book(id: $id) { ...book_fragment }
+}`, { id: '123456789' })
+  .then(r => r.json())
+  .then(r => console.log(r.data.book));
 ```
 
 **batch_request**
