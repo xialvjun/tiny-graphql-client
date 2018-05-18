@@ -4,7 +4,7 @@ const OPERATION_NAME_REGEX = /^(query|mutation)(\s+\w+)?\s*([\(\{])/;
 
 const random_name = () => Math.random().toString(32).slice(2);
 
-export function create_client<T>(send: (body: { operationName: string, query: string, variables: any }, extra?: any) => T) {
+export function create_client<T>(send: (body: { operationName: string, query: string, variables?: any }, extra?: any) => T) {
     const fragments = {};
     function detect_fragments(query: string, old_detected_fragments: string[]=[]) {
         const detected_fragments = (query.match(FRAGMENT_USE_REGEX) || [])
@@ -18,7 +18,7 @@ export function create_client<T>(send: (body: { operationName: string, query: st
         }
         return query;
     }
-    function run(query: string, variables?, extra?) {
+    function run(query: string, variables?: any, extra?: any) {
         query = query.trim();
         query = query.startsWith('{') ? `query ${query}` : query;
         const match = query.match(OPERATION_NAME_REGEX);

@@ -1,8 +1,9 @@
 {
   "name": "@xialvjun/tiny-graphql-client",
-  "version": "0.0.5",
-  "description": "a tiny, simple and customable graphql client, only support `query` and `mutation`.",
+  "version": "0.0.6",
+  "description": "a tiny, simple and customable graphql client, only support `query` and `mutation` now.",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,6 +21,6 @@
   "author": "xialvjun@live.com",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^2.6.2"
+    "typescript": "^2.8.3"
   }
 }

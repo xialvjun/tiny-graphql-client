@@ -1,4 +1,4 @@
-no# Logs
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -37,3 +37,6 @@ jspm_packages
 
 *.db
 *.sqlite*
+
+package-lock.json
+yarn.lock
