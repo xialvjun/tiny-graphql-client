@@ -27,7 +27,7 @@ export function create_client<T>(send: (body: { operationName: string, query: st
         }
         let operationName = (match[2] || '').trim();
         if (!operationName) {
-            operationName = random_name();
+            operationName = 'op'+random_name();
         }
         query = query.replace(match[0], `${match[1]} ${operationName}${match[3]==='(' ? '(' : ' {'}`);
         query = detect_fragments(query);
